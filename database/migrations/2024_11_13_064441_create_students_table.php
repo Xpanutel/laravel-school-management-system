@@ -10,8 +10,7 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id('student_id');
-            $table->string('first_name', 50);
-            $table->string('last_name', 50);
+            $table->string('full_name', 200);
             $table->date('date_of_birth');
             $table->enum('gender', ['Male', 'Female', 'Other']);
             $table->date('enrollment_date');
@@ -23,6 +22,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('students');
     }
-}
-
-Найти еще
+};
