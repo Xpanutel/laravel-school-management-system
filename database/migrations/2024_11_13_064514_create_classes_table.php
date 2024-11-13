@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->id('class_id');
             $table->string('class_name', 100);
-            $table->foreignId('teacher_id')->constrained('teachers', 'teacher_id')->onDelete('set null');
+            $table->unsignedBigInteger('uploaded_by')->nullable();
             $table->string('schedule', 255);
             $table->timestamps();
+
+            $table->foreign('uploaded_by')->references('teacher_id')->on('teachers')->onDelete('set null');
         });
     }
 
@@ -29,6 +31,10 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('documents', function (Blueprint $table) {
+            $table->dropForeign(['uploaded_by']); // Удалите внешний ключ
+        });
+
         Schema::dropIfExists('classes');
     }
 };

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class UserController extends Controller
         $user = User::create([
             'fullname' => $request->name,
             'email' => $request->email,
-            'password' => Hash:make($request->password), 
+            'password' => Hash::make($request->password), 
             'role' => $request->role,
         ]);
 
@@ -44,7 +45,7 @@ class UserController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if(!$user || Hash::check($request->password, $user->password)) {
+        if(!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Неверные учетные даные'], 401);
         }
 
@@ -53,7 +54,8 @@ class UserController extends Controller
         return response()->json(['message' => 'Успешный вход', 'token' => $token], 200);
     }
 
-    public function profile(Request $request) {
-        return response()->json(['user' => $request->user()])
+    public function profile(Request $request) 
+    {
+        return response()->json($request->user());
     }
 }

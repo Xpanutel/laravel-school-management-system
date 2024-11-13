@@ -13,13 +13,19 @@ return new class extends Migration
             $table->string('title', 200);
             $table->dateTime('upload_date')->default(now());
             $table->string('file_path', 255);
-            $table->foreignId('uploaded_by')->constrained('teachers', 'teacher_id')->onDelete('set null');
+            $table->unsignedBigInteger('uploaded_by')->nullable();
             $table->timestamps();
+
+            $table->foreign('uploaded_by')->references('teacher_id')->on('teachers')->onDelete('set null');
         });
     }
 
     public function down()
     {
+        Schema::table('documents', function (Blueprint $table) {
+            $table->dropForeign(['uploaded_by']); // Удалите внешний ключ
+        });
+        
         Schema::dropIfExists('documents');
     }
 };
