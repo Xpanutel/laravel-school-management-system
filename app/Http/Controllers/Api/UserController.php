@@ -10,7 +10,7 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function register(Request $request) {
+    public function registerUser(Request $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
@@ -29,11 +29,12 @@ class UserController extends Controller
             'role' => $request->role,
         ]);
 
-        return response()->json(['message' => 'Пользователь успешно зарегистрирован', 
-        'user' => $user], 201);
+        return response()->json([
+            'message' => 'Пользователь успешно зарегистрирован', 
+            'user' => $user], 201);
     }
 
-    public function login(Request $request) {
+    public function loginUser(Request $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:6',
@@ -54,8 +55,21 @@ class UserController extends Controller
         return response()->json(['message' => 'Успешный вход', 'token' => $token], 200);
     }
 
-    public function profile(Request $request) 
+    public function profileUser(Request $request) 
     {
         return response()->json($request->user());
     }
+
+    public function deleteUser(Request $request, $id) 
+    {
+        $user = User::find($id);
+
+        if(!$user) {
+            return response()->json(['message' => 'Пользователь не найден'], 404);
+        }
+
+        $user->delete();
+        return response()->json(['message' => 'Пользователь успешно удален'], 200);
+
+    }  
 }

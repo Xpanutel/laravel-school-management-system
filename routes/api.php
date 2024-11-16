@@ -15,10 +15,8 @@ use App\Http\Controllers\Api\UserController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-Route::post('/reg', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
-Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'profile']);
+// Пользователь
+Route::post('/reg', [UserController::class, 'registerUser']);
+Route::post('/login', [UserController::class, 'loginUser']);
+Route::delete('/userdel/{id}', [UserController::class, 'deleteUser']);
+Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'profileUser']);
