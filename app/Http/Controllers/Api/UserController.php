@@ -10,7 +10,8 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function registerUser(Request $request) {
+    public function registerUser(Request $request) 
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
@@ -31,7 +32,8 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Пользователь успешно зарегистрирован', 
-            'user' => $user], 201);
+            'user' => $user
+        ], 201);
     }
 
     public function loginUser(Request $request) {
