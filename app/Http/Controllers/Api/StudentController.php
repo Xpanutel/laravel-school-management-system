@@ -16,7 +16,7 @@ class StudentController extends Controller
             'full_name' => 'required|string|max:200',
             'date_of_birth' => 'required|date|before:today',
             'gender' => 'required|in:male,female',
-            'enrollment_date' => 'required|date|after_or_equal:today',
+            'enrollment_date' => 'required|date',
         ]);
 
         if($validator->fails()) {
@@ -36,17 +36,6 @@ class StudentController extends Controller
         ], 201);
     }
 
-    public function profileStudent($id) 
-    {
-        $student = Student::where('student_id', $id)->first();
-
-        if (!$student) {
-            return response()->json(['message' => 'Студент не найден'], 404);
-        }
-
-        return response()->json($student);
-    }
-
     public function deleteStudent(Request $request, $id) 
     {
         $student = Student::where('student_id', $id)->first();
@@ -57,6 +46,43 @@ class StudentController extends Controller
 
         $student->delete();
         return response()->json(['message' => 'Студент успешно удален'], 200);
-
     }  
+
+    public function updateStudent(Request $request, $id) 
+    {
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required|string|max:200',
+            'date_of_birth' => 'required|date|before:today',
+            'gender' => 'required|in:male,female',
+            'enrollment_date' => 'required|date',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $student = Student::where('student_id', $id)->first();
+        $student->update($request->all());
+        
+        return response()->json([
+            'message' => 'Студент успешно обновлен',
+            'student' => $student
+        ]);
+    }
+
+    public function getStudentById($id) 
+    {
+        $student = Student::where('student_id', $id)->first();
+
+        if (!$student) {
+            return response()->json(['message' => 'Студент не найден'], 404);
+        }
+
+        return response()->json($student);
+    }
+
+    public function getAllStudent() 
+    {
+        return response()->json(Student::all());
+    }
 }

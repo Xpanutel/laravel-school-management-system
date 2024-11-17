@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\TeacherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,5 +25,13 @@ Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'prof
 
 // Студент
 Route::post('/addstudent', [StudentController::class, 'addStudent']);
+Route::post('/updatestudent/{id}', [StudentController::class, 'updateStudent']);
+Route::get('/student/{id}', [StudentController::class, 'getStudentById']);
+Route::get('/students', [StudentController::class, 'getAllStudent']);
 Route::delete('/deletestudent/{id}', [StudentController::class, 'deleteStudent']);
-Route::get('/student/{id}', [StudentController::class, 'profileStudent']);
+
+// Учитель
+Route::post('/addteacher', [TeacherController::class, 'addTeacher']);
+Route::get('/teacher/{id}', [TeacherController::class, 'getTeacherById']);
+Route::get('/teachers', [TeacherController::class, 'getAllTeacher']);
+Route::delete('/deleteteacher/{id}', [TeacherController::class, 'deleteTeacher']);
