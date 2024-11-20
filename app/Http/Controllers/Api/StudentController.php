@@ -6,29 +6,30 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Http\Requests\AddStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Student;
 
 class StudentController extends Controller
 {
-    public function addStudent(Request $request) 
-    {    
-        $validator = Validator::make($request->all(), [
-            'full_name' => 'required|string|max:200',
-            'date_of_birth' => 'required|date|before:today',
-            'gender' => 'required|in:male,female',
-            'enrollment_date' => 'required|date',
-        ]);
+    public function index()
+    {
+        $students = Student::all();
+        return response()->json($students);
+    }
 
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+    public function show($id)
+    {
+        $student = Student::where('student_id', $id)->first();
+        if (!$student) {
+            return response()->json(['message' => 'Студент не найден'], 404);
         }
+        return response()->json($student);
+    }
 
-        $student = Student::create([
-            'full_name' => $request->full_name,
-            'date_of_birth' => $request->date_of_birth, 
-            'gender' => $request->gender,
-            'enrollment_date' => $request->enrollment_date,
-        ]);
+    public function store(AddStudentRequest $request)
+    {
+        $student = Student::create($request->validated());
 
         return response()->json([
             'message' => 'Студент успешно добавлен в базу', 
@@ -36,53 +37,25 @@ class StudentController extends Controller
         ], 201);
     }
 
-    public function deleteStudent(Request $request, $id) 
+    public function update(UpdateStudentRequest $request, $id)
     {
         $student = Student::where('student_id', $id)->first();
-
-        if(!$student) {
-            return response()->json(['message' => 'Студент не найден'], 404);
-        }
-
-        $student->delete();
-        return response()->json(['message' => 'Студент успешно удален'], 200);
-    }  
-
-    public function updateStudent(Request $request, $id) 
-    {
-        $validator = Validator::make($request->all(), [
-            'full_name' => 'required|string|max:200',
-            'date_of_birth' => 'required|date|before:today',
-            'gender' => 'required|in:male,female',
-            'enrollment_date' => 'required|date',
-        ]);
-
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $student = Student::where('student_id', $id)->first();
-        $student->update($request->all());
-        
-        return response()->json([
-            'message' => 'Студент успешно обновлен',
-            'student' => $student
-        ]);
-    }
-
-    public function getStudentById($id) 
-    {
-        $student = Student::where('student_id', $id)->first();
-
         if (!$student) {
             return response()->json(['message' => 'Студент не найден'], 404);
         }
 
+        $student->update($request->validated());
         return response()->json($student);
     }
 
-    public function getAllStudent() 
+    public function destroy($id)
     {
-        return response()->json(Student::all());
+        $student = Student::where('student_id', $id)->first();
+        if (!$student) {
+            return response()->json(['message' => 'Студент не найден'], 404);
+        }
+
+        $student->delete();
+        return response()->json(['message' => 'Студент удален']);
     }
 }

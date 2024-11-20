@@ -18,20 +18,34 @@ use App\Http\Controllers\Api\TeacherController;
 */
 
 // Пользователь
-Route::post('/reg', [UserController::class, 'registerUser']);
-Route::post('/login', [UserController::class, 'loginUser']);
-Route::delete('/deleteuser/{id}', [UserController::class, 'deleteUser']);
-Route::middleware('auth:sanctum')->get('/profile', [UserController::class, 'profileUser']);
+Route::post('/reg', [UserController::class, 'reg']);
+Route::post('/login', [UserController::class, 'login']);
+Route::delete('/deleteuser/{id}', [UserController::class, 'delete']);
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'user']);
 
-// Студент
-Route::post('/addstudent', [StudentController::class, 'addStudent']);
-Route::post('/updatestudent/{id}', [StudentController::class, 'updateStudent']);
-Route::get('/student/{id}', [StudentController::class, 'getStudentById']);
-Route::get('/students', [StudentController::class, 'getAllStudent']);
-Route::delete('/deletestudent/{id}', [StudentController::class, 'deleteStudent']);
+
+
+// Роуты для студента
+
+// Получение списка всех студентов
+Route::get('/students', [StudentController::class, 'index']);
+
+// Получение конкретного студента по ID
+Route::get('/student/{id}', [StudentController::class, 'show']);
+
+// Создание нового студента
+Route::post('/student', [StudentController::class, 'store']);
+
+// Обновление данных студента
+Route::put('/student/{id}', [StudentController::class, 'update']);
+
+// Удаление студента
+Route::delete('/student/{id}', [StudentController::class, 'destroy']);
+
+
 
 // Учитель
-Route::post('/addteacher', [TeacherController::class, 'addTeacher']);
-Route::get('/teacher/{id}', [TeacherController::class, 'getTeacherById']);
-Route::get('/teachers', [TeacherController::class, 'getAllTeacher']);
-Route::delete('/deleteteacher/{id}', [TeacherController::class, 'deleteTeacher']);
+Route::post('/addteacher', [TeacherController::class, 'add']);
+Route::get('/teacher/{id}', [TeacherController::class, 'getbyid']);
+Route::get('/teachers', [TeacherController::class, 'getll']);
+Route::delete('/deleteteacher/{id}', [TeacherController::class, 'delete']);

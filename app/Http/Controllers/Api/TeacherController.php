@@ -4,29 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\AddTeacherRequest;
 use App\Models\Teacher;
 
 class TeacherController extends Controller
 {
-    public function addTeacher(Request $request) 
+    public function add(AddTeacherRequest $request) 
     {    
-        $validator = Validator::make($request->all(), [
-            'full_name' => 'required|string|max:200',
-            'email' => 'required|email|unique:email',
-            'subject' => 'required|string|max:100',
-            'user_id' => 'required|exists:users,id', 
-        ]);
-        
-        if($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $teacher = Teacher::create([
-            'full_name' => $request->full_name,
-            'email' => $request->email, 
-            'subject' => $request->subject,
-            'user_id' => $request->user_id,
-        ]);
+        $teacher = Teacher::create($request->validated());
 
         return response()->json([
             'message' => 'Учитель успешно добавлен в базу', 
@@ -34,7 +19,7 @@ class TeacherController extends Controller
         ], 201);
     }
 
-    public function deleteTeacher(Request $request, $id) 
+    public function delete(Request $request, $id) 
     {
         $teacher = Teacher::where('teacher_id', $id)->first();
 
@@ -51,7 +36,7 @@ class TeacherController extends Controller
         ], 200);
     }  
 
-    public function getTeacherById($id) 
+    public function getbyid($id) 
     {
         $teacher = Teacher::where('teacher_id', $id)->first();
 
@@ -67,7 +52,7 @@ class TeacherController extends Controller
         ], 200); 
     }
 
-    public function getAllTeacher() 
+    public function getll() 
     {
         return response()->json(Teacher::all());
     }

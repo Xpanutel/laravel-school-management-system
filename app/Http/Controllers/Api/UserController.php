@@ -6,29 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\LoginUserRequest;
 use App\Models\User;
 
 class UserController extends Controller
 {
-    public function registerUser(Request $request) 
+    public function reg(RegisterUserRequest $request) 
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'required|in:teacher,student',
-            'name' => 'required|string|max:200',
-        ]);
-
-        if($validator->fails()) {
-            return response()->json($validator->error(), 422);
-        }
-
-        $user = User::create([
-            'fullname' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), 
-            'role' => $request->role,
-        ]);
+        $user = User::create($request->validated());
 
         return response()->json([
             'message' => 'Пользователь успешно зарегистрирован', 
@@ -36,15 +22,7 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function loginUser(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-        ]);
-
-        if($validator->fails()) {
-            return response()->json($validator->error(), 422);
-        }
+    public function login(LoginUserRequest $request) {
 
         $user = User::where('email', $request->email)->first();
 
@@ -57,12 +35,12 @@ class UserController extends Controller
         return response()->json(['message' => 'Успешный вход', 'token' => $token], 200);
     }
 
-    public function profileUser(Request $request) 
+    public function user(Request $request) 
     {
         return response()->json($request->user());
     }
 
-    public function deleteUser(Request $request, $id) 
+    public function delete(Request $request, $id) 
     {
         $user = User::find($id);
 
